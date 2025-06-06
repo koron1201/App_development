@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "296444278902",
+    "project_id": "flutter-remem",
+    "storage_bucket": "flutter-remem.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296444278902:android:5dc3381f5b85fa3cafc757",
+        "android_client_info": {
+          "package_name": "com.example.new_sample001"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvKyaHJlmOAO0Hx-wPBu3rRSsmfkmzth8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
