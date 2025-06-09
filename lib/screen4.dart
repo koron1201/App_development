@@ -1,202 +1,176 @@
 import 'package:flutter/material.dart';
-import 'package:new_sample001/screen_UI.dart';
-
-class MenuItem {
-  final String name;
-  final int price; // 値段を整数で管理
-
-  MenuItem({required this.name, required this.price});
-}
-
-final Map<String, List<MenuItem>> cafeteriaMenus = {
-  '欅': [
-    MenuItem(name: 'からあげ', price: 0),
-    MenuItem(name: 'ハンバーグ', price: 0),
-    MenuItem(name: 'ピーマンの肉詰め', price: 0),
-    MenuItem(name: '男爵コロッケ', price: 0),
-    MenuItem(name: 'サラダ', price: 0),
-    MenuItem(name: '麻婆', price: 0),
-  ],
-  'komorebi': [
-    MenuItem(name: 'ラーメン', price: 600),
-    MenuItem(name: 'チャーハン', price: 550),
-  ],
-  'HATO CAFE': [
-    MenuItem(name: 'オムライス', price: 650),
-    MenuItem(name: 'うどん', price: 400),
-  ],
-};
+import 'screen4_1keyaki.dart';
+import 'screen4_2komorebi.dart';
+import 'screen4_3hato.dart';
+import 'dart:ui';
 
 class Function4_Screen extends StatefulWidget {
   final String title;
-
   const Function4_Screen({super.key, required this.title});
 
   @override
-  _Function4_Screen createState() => _Function4_Screen();
+  Screen4_Structure createState() => Screen4_Structure();
 }
 
-class _Function4_Screen extends State<Function4_Screen> with SingleTickerProviderStateMixin{
-
-  late TabController _tabController;
-
-  String _searchQuery = '';
-  int? _minPrice; // 下限価格（nullは指定なし）
-  int? _maxPrice; // 上限価格
-
-  final _minPriceController = TextEditingController();
-  final _maxPriceController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: cafeteriaMenus.length, vsync: this);
-
-    // タブ変更時にUIを更新するためのリスナー
-    _tabController.addListener(() {
-      setState(() {});
-    });
+class Screen4_Structure extends State<Function4_Screen> {
+  Widget cafeteriaButton(BuildContext context, String title, Widget nextScreen) {
+    return GlassCard(
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => nextScreen));
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue.withOpacity(0.8),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            elevation: 8,
+            shadowColor: Colors.cyanAccent.withOpacity(0.6),
+          ),
+          child: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        ),
+      ),
+    );
   }
 
-  @override
-  void dispose() {
-    _minPriceController.dispose();
-    _maxPriceController.dispose();
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  List<MenuItem> getFilteredMenus(String cafeteria) {
-    final menus = cafeteriaMenus[cafeteria] ?? [];
-    return menus.where((item) {
-      final matchesName = item.name.contains(_searchQuery);
-      final matchesMinPrice = _minPrice == null || item.price >= _minPrice!;
-      final matchesMaxPrice = _maxPrice == null || item.price <= _maxPrice!;
-      return matchesName && matchesMinPrice && matchesMaxPrice;
-    }).toList();
-  }
-
-  void _onPriceChanged() {
-    setState(() {
-      _minPrice = int.tryParse(_minPriceController.text);
-      _maxPrice = int.tryParse(_maxPriceController.text);
-    });
+  Widget glass_return_button(BuildContext context) {
+    return GlassCard(
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () => Navigator.pop(context),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.greenAccent.withOpacity(0.7),
+            foregroundColor: Colors.black,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 6,
+            shadowColor: Colors.greenAccent.withOpacity(0.3),
+          ),
+          child: const Text('戻る', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-
-    final cafeteriaNames = cafeteriaMenus.keys.toList();
-    final currentTab = cafeteriaNames[_tabController.index];
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text('食堂メニュー'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: cafeteriaNames.map((name) => Tab(text: name)).toList(),
-          indicatorColor: Colors.white,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
+    final screen4_column = Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 40),
+        const Center(
+          child: Text(
+            '食堂の選択',
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
         ),
+        const SizedBox(height: 40),
+        cafeteriaButton(context, '欅', CafeteriaKeyaki()),
+        const SizedBox(height: 20),
+        cafeteriaButton(context, 'komorebi', CafeteriaKomorebi()),
+        const SizedBox(height: 20),
+        cafeteriaButton(context, 'HATO CAFE', CafeteriaHato()),
+        const SizedBox(height: 60),
+        glass_return_button(context),
+      ],
+    );
+
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: Text(widget.title, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Container(
-        color: Colors.lightBlue[50], // 背景色をここで指定
-        child: Column(
-          children: [
-            // メニュー名検索欄（常に表示）
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: 'メニュー名で検索',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (text) {
-                  setState(() {
-                    _searchQuery = text;
-                  });
-                },
-              ),
-            ),
-
-            if (currentTab == '欅')
-              Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  'おかず 100gあたり 180円\n'
-                      'みそ汁 60円\n'
-                      'ごはん 1g~200g 120円\n'
-                      'ごはん 201g~300g 140円\n'
-                      'ごはん 301g~400g 160円\n'
-                      'ごはん 401g~500g 180円\n',
-                  style: TextStyle(color: Colors.orange, fontSize: 16),
+      body: Stack(
+        children: [
+          // 背景グラデーション
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF23243A), Color(0xFF0F2027)],
                 ),
               ),
-
-            // 「欅」以外のときだけ価格絞り込みUIを表示
-            if (currentTab != '欅')
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _minPriceController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: '最低価格',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (_) => _onPriceChanged(),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Text('〜'),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: _maxPriceController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: '最高価格',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (_) => _onPriceChanged(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-            // メニューリスト
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: cafeteriaNames.map((cafeteria) {
-                  final filteredMenus = getFilteredMenus(cafeteria);
-                  return ListView.builder(
-                    itemCount: filteredMenus.length,
-                    itemBuilder: (context, index) {
-                      final menu = filteredMenus[index];
-                      return ListTile(
-                        title: Text(menu.name),
-                        trailing: cafeteria == '欅' ? null : Text('${menu.price} 円'),
-                        leading: Icon(Icons.restaurant_menu),
-                      );
-                    },
-                  );
-                }).toList(),
-              ),
             ),
-
-            // 戻るボタン
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: return_button(context),
+          ),
+              // 左上の丸いグラデーション円（必要なら）
+    Positioned(
+      top: -60,
+      left: -60,
+      child: Container(
+        width: 220,
+        height: 220,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.cyan.withOpacity(0.18), Colors.blue.withOpacity(0.10)],
+          ),
+          shape: BoxShape.circle,
+        ),
+      ),
+    ),
+    // 右上の丸いグラデーション円（これがなかったら追加）
+    Positioned(
+      top: 180,
+      right: -40,
+      child: Container(
+        width: 140,
+        height: 140,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.purple.withOpacity(0.13), Colors.pink.withOpacity(0.10)],
+          ),
+          shape: BoxShape.circle,
+        ),
+      ),
+    ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: SingleChildScrollView(child: screen4_column),
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class GlassCard extends StatelessWidget {
+  final Widget child;
+  const GlassCard({super.key, required this.child});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withOpacity(0.10), width: 1.2),
+        gradient: LinearGradient(
+          colors: [Colors.white.withOpacity(0.10), Colors.white.withOpacity(0.04)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueAccent.withOpacity(0.12),
+            blurRadius: 24,
+            spreadRadius: 2,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+          child: child,
         ),
       ),
     );
