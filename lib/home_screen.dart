@@ -136,7 +136,7 @@ class HomeScreen extends StatelessWidget {
                     // ヘッダー
                     const SizedBox(height: 10),
                     Text(
-                      'DASHBOARD',
+                      'UniPocket',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
