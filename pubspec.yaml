@@ -20,7 +20,8 @@ dependencies:
   path_provider: ^2.0.15
   shared_preferences: ^2.2.2
   cloud_firestore: ^4.17.5
-  firebase_core: ^2.15.0
+  firebase_core: ^2.25.4
+  firebase_auth: ^4.17.4
   fl_chart: ^0.66.2
 
 dev_dependencies:

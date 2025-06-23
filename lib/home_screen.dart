@@ -6,6 +6,7 @@ import 'package:new_sample001/screen4.dart';
 import 'package:new_sample001/screen5.dart';
 import 'package:new_sample001/screen6.dart';
 import 'dart:ui';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatelessWidget {
   final String title;
@@ -59,6 +60,18 @@ class HomeScreen extends StatelessWidget {
     ];
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'ログアウト',
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+            },
+          ),
+        ],
+      ),
       backgroundColor: Colors.black,
       body: Stack(
         children: [

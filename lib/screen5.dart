@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:ui';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // GlassCardウィジェットを追加
 class GlassCard extends StatelessWidget {
@@ -50,16 +51,26 @@ class Fuction5_Screen extends StatefulWidget {
 }
 
 class _Fuction5_ScreenState extends State<Fuction5_Screen> {
-  final Stream<QuerySnapshot> _bookmarksStream =
-      FirebaseFirestore.instance
-          .collection('bookmarks')
-          .orderBy('createdAt', descending: true)
-          .snapshots();
+  Stream<QuerySnapshot> get _bookmarksStream {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      // 未ログイン時は空のストリームを返す
+      return const Stream<QuerySnapshot>.empty();
+    }
+    return FirebaseFirestore.instance
+      .collection('bookmarks')
+      .doc(user.uid)
+      .collection('userBookmarks')
+      .orderBy('createdAt', descending: true)
+      .snapshots();
+  }
 
   Future<void> _showEditDialog(
     BuildContext context,
     DocumentSnapshot bookmarkDoc,
   ) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
     final String docId = bookmarkDoc.id;
     final Map<String, dynamic> data =
         bookmarkDoc.data() as Map<String, dynamic>;
@@ -219,6 +230,8 @@ class _Fuction5_ScreenState extends State<Fuction5_Screen> {
                 try {
                   await FirebaseFirestore.instance
                       .collection('bookmarks')
+                      .doc(user.uid)
+                      .collection('userBookmarks')
                       .doc(docId)
                       .update({
                         'title': newTitle,
@@ -252,6 +265,8 @@ class _Fuction5_ScreenState extends State<Fuction5_Screen> {
   }
 
   Future<void> _showAddBookmarkDialog(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
     final TextEditingController titleController = TextEditingController();
     final TextEditingController urlController = TextEditingController();
     final TextEditingController usernameController = TextEditingController();
@@ -372,6 +387,8 @@ class _Fuction5_ScreenState extends State<Fuction5_Screen> {
                   try {
                     await FirebaseFirestore.instance
                         .collection('bookmarks')
+                        .doc(user.uid)
+                        .collection('userBookmarks')
                         .add({
                           'title': title,
                           'url': url,
@@ -579,6 +596,8 @@ class _Fuction5_ScreenState extends State<Fuction5_Screen> {
                                       try {
                                         await FirebaseFirestore.instance
                                             .collection('bookmarks')
+                                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                                            .collection('userBookmarks')
                                             .doc(bookmarkDoc.id)
                                             .delete();
                                         Navigator.of(dialogContext).pop();
