@@ -35,8 +35,6 @@ class Screen4_Structure extends State<Function4_Screen> {
     );
   }
 
-  // ここにあった glass_return_button メソッドは削除されます。
-
   @override
   Widget build(BuildContext context) {
     final screen4_column = Column(
@@ -57,7 +55,7 @@ class Screen4_Structure extends State<Function4_Screen> {
         const SizedBox(height: 20),
         cafeteriaButton(context, 'HATO CAFE', CafeteriaHato()),
         const SizedBox(height: 60),
-        glass_return_button(context), // トップレベル関数を呼び出す
+        glass_return_button(context),
       ],
     );
 
@@ -70,7 +68,6 @@ class Screen4_Structure extends State<Function4_Screen> {
       ),
       body: Stack(
         children: [
-          // 背景グラデーション
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
@@ -82,40 +79,47 @@ class Screen4_Structure extends State<Function4_Screen> {
               ),
             ),
           ),
-              // 左上の丸いグラデーション円
-        Positioned(
-          top: -60,
-          left: -60,
-          child: Container(
-            width: 220,
-            height: 220,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.cyan.withOpacity(0.18), Colors.blue.withOpacity(0.10)],
+          Positioned(
+            top: -60,
+            left: -60,
+            child: Container(
+              width: 220,
+              height: 220,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.cyan.withOpacity(0.18), Colors.blue.withOpacity(0.10)],
+                ),
+                shape: BoxShape.circle,
               ),
-              shape: BoxShape.circle,
             ),
           ),
-        ),
-        // 右上の丸いグラデーション円
-        Positioned(
-          top: 180,
-          right: -40,
-          child: Container(
-            width: 140,
-            height: 140,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.purple.withOpacity(0.13), Colors.pink.withOpacity(0.10)],
+          Positioned(
+            top: 180,
+            right: -40,
+            child: Container(
+              width: 140,
+              height: 140,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.purple.withOpacity(0.13), Colors.pink.withOpacity(0.10)],
+                ),
+                shape: BoxShape.circle,
               ),
-              shape: BoxShape.circle,
             ),
           ),
-        ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: SingleChildScrollView(child: screen4_column),
+              child: LayoutBuilder( // <--- ここにLayoutBuilderを追加
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox( // <--- ConstrainedBox を追加
+                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                      child: screen4_column,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -124,9 +128,8 @@ class Screen4_Structure extends State<Function4_Screen> {
   }
 }
 
-// glass_return_button をトップレベル関数として定義
 Widget glass_return_button(BuildContext context) {
-  return GlassCard( // GlassCard はこのファイル内で定義されているので、問題なくアクセスできます
+  return GlassCard(
     child: SizedBox(
       width: double.infinity,
       child: ElevatedButton(
