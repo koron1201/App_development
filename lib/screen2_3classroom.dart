@@ -208,37 +208,11 @@ Widget get_available_3classroom() {
       } 
       //5限
       else if ((hour == 17 && minute >= 10) || (hour == 18) || (hour == 19 && minute < 0)) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '3号館で授業中の教室はありません。',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        );
+        return display_allclassroom('3');
       } 
       //7時以降の
       else {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '本日の授業はすべて終了しました。',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        );
+        return display_allclassroom('3');
       }
     }
     //前期の火曜日
@@ -403,35 +377,9 @@ Widget get_available_3classroom() {
       } 
       //5限
       else if ((hour == 17 && minute >= 10) || (hour == 18) || (hour == 19 && minute < 0)) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '3号館で授業中の教室はありません。',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        );
+        return display_allclassroom('3');
       } else {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '本日の授業はすべて終了しました。',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        );
+        return display_allclassroom('3');
       }
     }
     //前期の水曜日
@@ -513,20 +461,7 @@ Widget get_available_3classroom() {
       } 
       //3限
       else if ((hour == 12 && minute >= 50) || (hour == 13) || (hour == 14) || (hour == 15 && minute < 20)) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '3号館で授業中の教室はありません。',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        );
+        return display_allclassroom('3');
       } 
       //4限
       else if ((hour == 15 && minute >= 20) || (hour == 16) || (hour == 17 && minute < 10)) {
@@ -797,20 +732,7 @@ Widget get_available_3classroom() {
           ],
         );
       } else {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '本日の授業はすべて終了しました。',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        );
+        return display_allclassroom('3');
       }
     }
     //前期の金曜日
@@ -973,35 +895,9 @@ Widget get_available_3classroom() {
       } 
       //5限
       else if ((hour == 17 && minute >= 10) || (hour == 18) || (hour == 19 && minute < 0)) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '3号館で授業中の教室はありません。',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        );
+        return display_allclassroom('3');
       } else {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '本日の授業はすべて終了しました。',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        );
+        return display_allclassroom('3');
       }
     }
     //土日
