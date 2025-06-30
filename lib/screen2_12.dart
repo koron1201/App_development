@@ -11,11 +11,28 @@ class Screen2_12 extends StatefulWidget {
 }
 
 class _Screen2_12State extends State<Screen2_12> {
-  String? selectedClassroom; // 選択された教室を管理する変数
+  // 戻るボタンで画面を離れても保持する選択状態（アプリ実行中のみ）
+  static String? _persistedClassroom;
+
+  String? selectedClassroom; // 現在の画面インスタンスの選択状態
+
+  @override
+  void initState() {
+    super.initState();
+    // 以前の選択を復元
+    selectedClassroom = _persistedClassroom;
+  }
 
   void selectClassroom(String classroomName) {
     setState(() {
-      selectedClassroom = classroomName;
+      // すでに選択されている教室をもう一度タップした場合は選択を解除
+      if (selectedClassroom == classroomName) {
+        selectedClassroom = null;
+      } else {
+        selectedClassroom = classroomName;
+      }
+      // 状態を永続化
+      _persistedClassroom = selectedClassroom;
     });
   }
 
@@ -40,20 +57,6 @@ class _Screen2_12State extends State<Screen2_12> {
           child: const Text('戻る', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         ),
       ),
-    );
-  }
-
-  Widget get_available_12classroom(Function selectClassroom, String? selectedClassroom) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: () => selectClassroom('124'),
-          child: convers_container('124', isSelected: selectedClassroom == '124'),
-        ),
-        // 他の教室も同様に追加
-      ],
     );
   }
 
@@ -130,7 +133,7 @@ class _Screen2_12State extends State<Screen2_12> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    GlassCard(child: get_available_12classroom(selectClassroom, selectedClassroom)),
+                    GlassCard(child: get_available_12classroom()),
                     const SizedBox(height: 36),
                     glass_return_button(context),
                   ],

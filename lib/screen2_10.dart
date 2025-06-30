@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:new_sample001/screen2_10classroom.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Screen2_10 extends StatefulWidget {
   final String title;
@@ -11,38 +12,6 @@ class Screen2_10 extends StatefulWidget {
 }
 
 class _Screen2_10State extends State<Screen2_10> {
-  String? selectedClassroom;
-
-  void selectClassroom(String classroomName) {
-    setState(() {
-      selectedClassroom = classroomName;
-    });
-  }
-
-  Widget glass_return_button(BuildContext context) {
-    return GlassCard(
-      child: SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.greenAccent.withOpacity(0.7),
-            foregroundColor: Colors.black,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            elevation: 6,
-            shadowColor: Colors.greenAccent.withOpacity(0.3),
-          ),
-          child: const Text('戻る', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,7 +86,7 @@ class _Screen2_10State extends State<Screen2_10> {
                     ),
                     const SizedBox(height: 24),
                     GlassCard(
-                      child: get_available_10classroom(selectClassroom, selectedClassroom),
+                      child: get_available_10classroom(),
                     ),
                     const SizedBox(height: 36),
                     glass_return_button(context),
@@ -127,6 +96,30 @@ class _Screen2_10State extends State<Screen2_10> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget glass_return_button(BuildContext context) {
+    return GlassCard(
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.greenAccent.withOpacity(0.7),
+            foregroundColor: Colors.black,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            elevation: 6,
+            shadowColor: Colors.greenAccent.withOpacity(0.3),
+          ),
+          child: const Text('戻る', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        ),
       ),
     );
   }

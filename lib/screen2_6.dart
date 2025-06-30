@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:new_sample001/screen2_6classroom.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Screen2_6 extends StatefulWidget {
   final String title;
@@ -11,7 +12,22 @@ class Screen2_6 extends StatefulWidget {
 }
 
 class _Screen2_6State extends State<Screen2_6> {
-  String? selectedClassroom; // 選択された教室を管理する変数
+  static String? _persistedClassroom;
+
+  String? selectedClassroom; // 現在の選択
+
+  @override
+  void initState() {
+    super.initState();
+    selectedClassroom = _persistedClassroom;
+  }
+
+  void selectClassroom(String classroomName) {
+    setState(() {
+      selectedClassroom = selectedClassroom == classroomName ? null : classroomName;
+      _persistedClassroom = selectedClassroom;
+    });
+  }
 
   Widget glass_return_button(BuildContext context) {
     return GlassCard(
@@ -124,19 +140,27 @@ class _Screen2_6State extends State<Screen2_6> {
   }
 
   Widget get_available_6classroom() {
+    Widget _classroomTile(String room) {
+      final docRef = FirebaseFirestore.instance.collection('classrooms6').doc(room);
+      return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        stream: docRef.snapshots(),
+        builder: (context, snapshot) {
+          final used = (snapshot.data?.data()?['using'] ?? false) as bool;
+          return GestureDetector(
+            onTap: () async {
+              await docRef.set({'using': !used});
+            },
+            child: convers_container(room, isSelected: used),
+          );
+        },
+      );
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              selectedClassroom = '6101'; // 例として6101教室を選択
-            });
-          },
-          child: convers_container('6101', isSelected: selectedClassroom == '6101'),
-        ),
-        // 他の教室も同様に追加
+        _classroomTile('6101'),
       ],
     );
   }

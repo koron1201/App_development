@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:new_sample001/screen2_notclassroom.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 Widget convers_container(String classroomName, {bool isSelected = false}) {
   return Container(
@@ -34,21 +35,30 @@ Widget convers_container(String classroomName, {bool isSelected = false}) {
   );
 }
 
-Widget get_available_10classroom(Function selectClassroom, String? selectedClassroom) {
+Widget _classroomTile(String roomName) {
+  final docRef = FirebaseFirestore.instance.collection('classrooms10').doc(roomName);
+  return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+    stream: docRef.snapshots(),
+    builder: (context, snapshot) {
+      final isSelected = (snapshot.data?.data()?['using'] ?? false) as bool;
+      return GestureDetector(
+        onTap: () async {
+          await docRef.set({'using': !isSelected});
+        },
+        child: convers_container(roomName, isSelected: isSelected),
+      );
+    },
+  );
+}
+
+Widget get_available_10classroom() {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      GestureDetector(
-        onTap: () => selectClassroom('115'),
-        child: convers_container('115', isSelected: selectedClassroom == '115'),
-      ),
-      SizedBox(width: 12), // 教室間のスペース
-      GestureDetector(
-        onTap: () => selectClassroom('116'),
-        child: convers_container('116', isSelected: selectedClassroom == '116'),
-      ),
-      // 必要に応じて他の教室も追加
+      _classroomTile('115'),
+      SizedBox(width: 12),
+      _classroomTile('116'),
     ],
   );
 }
