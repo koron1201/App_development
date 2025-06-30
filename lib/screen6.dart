@@ -118,8 +118,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   Future<void> loadWeeklyForecast(double lat, double lon) async {
     final response = await http.get(Uri.parse(
-      'https://api.openweathermap.org/data/2.5/forecast?lat=$lat&lon=$lon&appid=e23698bd91c71b4e9b02283f3474646f&lang=ja&units=metric',
-    ));
+      'https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=e23698bd91c71b4e9b02283f3474646f&lang=ja&units=metric'));
     if (response.statusCode != 200) {
       setState(() {
         weeklyForecast = [];
@@ -182,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   Future<void> loadWeather(String query) async {
     final response = await http.get(Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?appid=e23698bd91c71b4e9b02283f3474646f&lang=ja&units=metric&q=$query'));
+        'https://api.openweathermap.org/data/2.5/weather?appid=e23698bd91c71b4e9b02283f3474646f&lang=ja&units=metric&q=${Uri.encodeComponent(query)}'));
     if (response.statusCode != 200) {
       setState(() {
         weeklyForecast = [];

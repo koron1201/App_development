@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:new_sample001/screen2_3classroom.dart';
 
-class Screen2_3 extends StatelessWidget {
+class Screen2_3 extends StatefulWidget {
   final String title;
   const Screen2_3({super.key, required this.title});
+
+  @override
+  _Screen2_3State createState() => _Screen2_3State();
+}
+
+class _Screen2_3State extends State<Screen2_3> {
+  String? selectedClassroom; // 選択された教室を管理する変数
 
   Widget glass_return_button(BuildContext context) {
     return GlassCard(
@@ -35,7 +42,7 @@ class Screen2_3 extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        title: Text(widget.title, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -96,7 +103,7 @@ class Screen2_3 extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
                         child: Text(
-                          title + 'の教室状況',
+                          widget.title + 'の教室状況',
                           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
                           textAlign: TextAlign.center,
                         ),
@@ -113,6 +120,24 @@ class Screen2_3 extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget get_available_3classroom() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedClassroom = '3120'; // 例として3120教室を選択
+            });
+          },
+          child: convers_container('3120', isSelected: selectedClassroom == '3120'),
+        ),
+        // 他の教室も同様に追加
+      ],
     );
   }
 }

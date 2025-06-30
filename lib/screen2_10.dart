@@ -2,9 +2,22 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:new_sample001/screen2_10classroom.dart';
 
-class Screen2_10 extends StatelessWidget {
+class Screen2_10 extends StatefulWidget {
   final String title;
   const Screen2_10({super.key, required this.title});
+
+  @override
+  _Screen2_10State createState() => _Screen2_10State();
+}
+
+class _Screen2_10State extends State<Screen2_10> {
+  String? selectedClassroom;
+
+  void selectClassroom(String classroomName) {
+    setState(() {
+      selectedClassroom = classroomName;
+    });
+  }
 
   Widget glass_return_button(BuildContext context) {
     return GlassCard(
@@ -35,7 +48,7 @@ class Screen2_10 extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        title: Text(widget.title, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -96,14 +109,16 @@ class Screen2_10 extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
                         child: Text(
-                          title + 'の教室状況',
+                          widget.title + 'の教室状況',
                           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
                           textAlign: TextAlign.center,
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
-                    GlassCard(child: get_available_10classroom()),
+                    GlassCard(
+                      child: get_available_10classroom(selectClassroom, selectedClassroom),
+                    ),
                     const SizedBox(height: 36),
                     glass_return_button(context),
                   ],

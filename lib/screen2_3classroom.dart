@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:new_sample001/screen2_notclassroom.dart';
 
-Widget convers_container(String classroomName) {
+Widget convers_container(String classroomName, {bool isSelected = false}) {
   return Container(
     padding: EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: Colors.blue[50], // 背景色を追加
-      borderRadius: BorderRadius.circular(10), // 角を丸くする
-      border: Border.all(color: Colors.blue, width: 2), // 枠線を追加
+      color: isSelected ? Colors.red[50] : Colors.blue[50], // 背景色を変更
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: isSelected ? Colors.red : Colors.blue, width: 2), // 枠線の色を変更
     ),
-    child: Text(
-      classroomName,
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: Colors.blue,
-      ),
-      textAlign: TextAlign.center,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          classroomName,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: isSelected ? Colors.red : Colors.blue,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        if (isSelected) // 使用中の文字を表示
+          Text(
+            '使用中',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.red,
+            ),
+          ),
+      ],
     ),
   );
 }
