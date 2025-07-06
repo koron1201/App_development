@@ -1,11 +1,21 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'screen4.dart';
+import 'package:flutter/services.dart' show rootBundle; // 追加
+import 'package:csv/csv.dart'; // 追加
 
+// MenuItemクラスの定義 (このファイルで使用されるため)
 class MenuItem {
   final String name;
   final int price;
   MenuItem({required this.name, required this.price});
+}
+
+// CSVデータ読み込みヘルパー関数 (このファイルで使用されるため)
+Future<List<List<dynamic>>> loadCsvData(String path) async {
+  final rawData = await rootBundle.loadString(path);
+  List<List<dynamic>> listData = const CsvToListConverter().convert(rawData);
+  return listData;
 }
 
 class CafeteriaKomorebi extends StatefulWidget {
@@ -14,10 +24,14 @@ class CafeteriaKomorebi extends StatefulWidget {
 }
 
 class _CafeteriaKomorebiState extends State<CafeteriaKomorebi> {
-  final List<MenuItem> menus = [
-    MenuItem(name: 'ラーメン', price: 600),
-    MenuItem(name: 'チャーハン', price: 550),
-  ];
+  // 元のハードコードされたリストは不要になります
+  // final List<MenuItem> menus = [
+  //   MenuItem(name: 'ラーメン', price: 600),
+  //   MenuItem(name: 'チャーハン', price: 550),
+  // ];
+
+  List<MenuItem> menus = []; // MenuItemのリストとして初期化
+  bool _isLoading = true; // データロード中の状態を管理
 
   String _searchQuery = '';
   int? _minPrice;
@@ -33,6 +47,35 @@ class _CafeteriaKomorebiState extends State<CafeteriaKomorebi> {
       final matchesMax = _maxPrice == null || item.price <= _maxPrice!;
       return matchesName && matchesMin && matchesMax;
     }).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMenuData(); // データロードを開始
+  }
+
+  Future<void> _loadMenuData() async {
+    try {
+      // CSVファイルのパスを 'assets/menu/komorebi_menu.csv' に変更
+      final List<List<dynamic>> csvData = await loadCsvData('assets/menu/komorebi_menu.csv');
+      setState(() {
+        // ヘッダー行をスキップ (1行目からデータの場合)
+        menus = csvData.skip(1).map((row) {
+          return MenuItem(
+            name: row[0].toString(),
+            price: int.tryParse(row[1].toString()) ?? 0, // priceが数値でない場合0に
+          );
+        }).toList();
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading Komorebi menu data: $e');
+      setState(() {
+        _isLoading = false;
+        // エラー処理（例: エラーメッセージを表示、空のリストを維持など）
+      });
+    }
   }
 
   void _onPriceChanged() {
@@ -54,7 +97,7 @@ class _CafeteriaKomorebiState extends State<CafeteriaKomorebi> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('komorebi', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('komorebi(電子マネー対応)', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.blue.withOpacity(0.85),
       ),
       body: Stack(
@@ -70,86 +113,64 @@ class _CafeteriaKomorebiState extends State<CafeteriaKomorebi> {
               ),
             ),
           ),
-          Positioned(
-            top: -60,
-            left: -60,
-            child: Container(
-              width: 220,
-              height: 220,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.cyan.withOpacity(0.18), Colors.blue.withOpacity(0.10)],
-                ),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 180,
-            right: -40,
-            child: Container(
-              width: 140,
-              height: 140,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.purple.withOpacity(0.13), Colors.pink.withOpacity(0.10)],
-                ),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: LayoutBuilder( // <--- ここにLayoutBuilderを追加
-                builder: (context, constraints) {
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Opacity(
+              opacity: 0.8,
+              child: Builder(
+                builder: (context) {
                   return SingleChildScrollView(
-                    child: ConstrainedBox( // <--- ConstrainedBox を追加
-                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          const SizedBox(height: 20),
                           GlassCard(
                             child: Padding(
-                              padding: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(8.0),
                               child: TextField(
-                                decoration: const InputDecoration(
-                                  labelText: 'メニュー検索',
-                                  labelStyle: TextStyle(color: Colors.white70),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white24),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.cyanAccent),
-                                  ),
-                                ),
-                                style: const TextStyle(color: Colors.white),
                                 onChanged: (value) {
                                   setState(() {
                                     _searchQuery = value;
                                   });
                                 },
+                                decoration: InputDecoration(
+                                  labelText: 'メニューを検索',
+                                  labelStyle: const TextStyle(color: Colors.white70),
+                                  prefixIcon: const Icon(Icons.search, color: Colors.white70),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white.withOpacity(0.15),
+                                ),
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 16),
                           Row(
                             children: [
                               Expanded(
                                 child: GlassCard(
                                   child: TextField(
                                     controller: _minPriceController,
-                                    decoration: const InputDecoration(
-                                      labelText: '最小価格',
-                                      labelStyle: TextStyle(color: Colors.white70),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.white24),
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      labelText: '最低価格',
+                                      labelStyle: const TextStyle(color: Colors.white70),
+                                      prefixIcon: const Icon(Icons.attach_money, color: Colors.white70),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide.none,
                                       ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.cyanAccent),
-                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white.withOpacity(0.15),
                                     ),
                                     style: const TextStyle(color: Colors.white),
-                                    keyboardType: TextInputType.number,
                                     onChanged: (_) => _onPriceChanged(),
                                   ),
                                 ),
@@ -159,18 +180,19 @@ class _CafeteriaKomorebiState extends State<CafeteriaKomorebi> {
                                 child: GlassCard(
                                   child: TextField(
                                     controller: _maxPriceController,
-                                    decoration: const InputDecoration(
-                                      labelText: '最大価格',
-                                      labelStyle: TextStyle(color: Colors.white70),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.white24),
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      labelText: '最高価格',
+                                      labelStyle: const TextStyle(color: Colors.white70),
+                                      prefixIcon: const Icon(Icons.money_off, color: Colors.white70),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide.none,
                                       ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.cyanAccent),
-                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white.withOpacity(0.15),
                                     ),
                                     style: const TextStyle(color: Colors.white),
-                                    keyboardType: TextInputType.number,
                                     onChanged: (_) => _onPriceChanged(),
                                   ),
                                 ),
@@ -178,21 +200,23 @@ class _CafeteriaKomorebiState extends State<CafeteriaKomorebi> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          GlassCard(
-                            child: SizedBox( // <--- Expanded の代わりに SizedBox を使用
-                              height: 250, // 適度な高さを設定
-                              child: ListView.builder(
-                                itemCount: filteredMenus.length,
-                                itemBuilder: (context, index) {
-                                  final menu = filteredMenus[index];
-                                  return ListTile(
-                                    title: Text(menu.name, style: const TextStyle(color: Colors.white)),
-                                    trailing: Text('${menu.price}円', style: const TextStyle(color: Colors.cyanAccent)),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
+                          _isLoading
+                              ? const Center(child: CircularProgressIndicator()) // ロード中はインジケーターを表示
+                              : GlassCard(
+                                  child: SizedBox(
+                                    height: 250, // 適度な高さを設定
+                                    child: ListView.builder(
+                                      itemCount: filteredMenus.length,
+                                      itemBuilder: (context, index) {
+                                        final menu = filteredMenus[index];
+                                        return ListTile(
+                                          title: Text(menu.name, style: const TextStyle(color: Colors.white)),
+                                          trailing: Text('${menu.price}円', style: const TextStyle(color: Colors.cyanAccent)),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
                           const SizedBox(height: 20),
                           glass_return_button(context),
                         ],
