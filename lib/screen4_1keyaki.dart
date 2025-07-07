@@ -4,9 +4,7 @@ import 'screen4.dart'; // GlassCard と glass_return_button を使うため
 import 'package:flutter/services.dart' show rootBundle; // 追加
 import 'package:csv/csv.dart'; // 追加
 
-// MenuItemクラスはここでは不要なので削除またはコメントアウト
 
-// CSVデータ読み込みヘルパー関数 (utils.dartなどからimportすることも可能)
 Future<List<List<dynamic>>> loadCsvData(String path) async {
   final rawData = await rootBundle.loadString(path);
   List<List<dynamic>> listData = const CsvToListConverter().convert(rawData);

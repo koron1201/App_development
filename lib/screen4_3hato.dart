@@ -24,12 +24,7 @@ class CafeteriaHato extends StatefulWidget {
 }
 
 class _CafeteriaHatoState extends State<CafeteriaHato> {
-  // 元のハードコードされたリストは不要になります
-  // final List<MenuItem> menus = [
-  //   MenuItem(name: 'ビーフカレー', price: 700),
-  //   MenuItem(name: 'チキンカレー', price: 650),
-  //   // ... (その他の既存メニュー)
-  // ];
+
 
   List<MenuItem> menus = []; // MenuItemのリストとして初期化
   bool _isLoading = true; // データロード中の状態を管理

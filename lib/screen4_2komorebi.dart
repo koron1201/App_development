@@ -24,11 +24,7 @@ class CafeteriaKomorebi extends StatefulWidget {
 }
 
 class _CafeteriaKomorebiState extends State<CafeteriaKomorebi> {
-  // 元のハードコードされたリストは不要になります
-  // final List<MenuItem> menus = [
-  //   MenuItem(name: 'ラーメン', price: 600),
-  //   MenuItem(name: 'チャーハン', price: 550),
-  // ];
+
 
   List<MenuItem> menus = []; // MenuItemのリストとして初期化
   bool _isLoading = true; // データロード中の状態を管理
