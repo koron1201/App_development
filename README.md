@@ -1,16 +1,15 @@
-# new_sample001
+# 電大（鳩山）学生用App＿プロトタイプ
 
-A new Flutter project.
+鳩山キャンパスに所属している学生向けに作ったプロトタイプです。
+ゼミで作成したプロダクトですので、公開はしません。
+Flutterを用いて作成しました。
 
-## Getting Started
+## 内容説明
+以下にApp内の機能を説明します
+- ログイン機能：Firebaseを用いてIDとパスワードを管理しています。ただし、FirebaseからIDと パスワードが見れてしまいます。
+- 空いている教室一覧：各時間にどこの教室が空いているかを表示する機能です。Excelですべて手作業で入力し、それを表示しています。
+- 献立の表示：鳩山キャンパスの一日ごとの献立を表示してくれる機能です。こちらも手作業で打ち込んでいます。
+- 天気機能：今日の天気予報・１週間ごとの予報（グラフ表示）・傘の必要性を表示する機能です。
+- 連絡機能：同じ授業を受けている人と連絡ができたり、過去問を保存できる機能です。
+- ToDo機能
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
